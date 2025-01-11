@@ -1,0 +1,52 @@
+services:
+  spring-boot:
+    build: ./spring-boot
+    ports:
+      - "8080:8080"
+    depends_on:
+      - express
+      - redis
+    networks:
+      - backend
+
+  express:
+    build: ./express
+    ports:
+      - "3000:3000"
+    depends_on:
+      - redis
+    networks:
+      - backend
+
+  flask:
+    build: ./flask
+    ports:
+      - "5000:5000"
+    depends_on:
+      - redis
+      - postgres
+    networks:
+      - backend
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - backend
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Sup!nf0
+      POSTGRES_DB: postgresdb
+    ports:
+      - "5432:5432"
+    networks:
+      - backend
+
+networks:
+  backend:
